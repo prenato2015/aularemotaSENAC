@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Questionário de Tecnologia</title>
+    <style>
+        :root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --white: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --success: #10b981;
+    --error: #ef4444;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+}
+
+/* Container Principal (Card) */
+#setup-container, #quiz-container, #result-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 550px;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-out;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-top: 0;
+    color: var(--primary);
+    font-weight: 800;
+}
+
+/* Inputs e Campos de Texto */
+input[type="text"] {
+    width: 100%;
+    padding: 14px 20px;
+    margin: 20px 0;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Botões Estilizados */
+button {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Opções de Resposta */
+.option {
+    background: #f9fafb;
+    border: 2px solid #f3f4f6;
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.option:hover {
+    border-color: var(--primary);
+    background-color: #f5f3ff;
+    color: var(--primary);
+}
+
+/* Estados de Correção */
+.correct {
+    background-color: #d1fae5 !important;
+    border-color: var(--success) !important;
+    color: #065f46 !important;
+}
+
+.wrong {
+    background-color: #fee2e2 !important;
+    border-color: var(--error) !important;
+    color: #991b1b !important;
+}
+
+/* Feedback e Mensagens */
+#feedback {
+    margin: 20px 0;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+#user-info-display {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin-bottom: 25px;
+}
+
+/* Classes Utilitárias */
+.hidden { display: none; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    #setup-container, #quiz-container, #result-container {
+        padding: 1.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div id="setup-container">
+        <h2>AULA REMOTA - ATIVIDADE 01 - 08/04/2026</h2>
+        <input type="text" id="userName" placeholder="Digite seu nome completo">
+        <button onclick="startQuiz()">Iniciar Questionário</button>
+    </div>
+
+    <div id="quiz-container" class="hidden">
+        <div id="user-info-display"></div>
+        <hr>
+        <div class="question-container">
+            <h3 id="question-text"></h3>
+            <div id="options-container"></div>
+            <div id="feedback"></div>
+            <button id="next-btn" class="hidden" onclick="loadNextQuestion()">Próxima Questão</button>
+        </div>
+    </div>
+
+    <div id="result-container" class="hidden">
+        <h2>Resultado Final</h2>
+        <p id="final-stats"></p>
+    </div>
+
+    <script src="quiz.js"></script>
+</body>
+</html>
