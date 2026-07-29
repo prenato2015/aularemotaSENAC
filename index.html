@@ -1,1 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>AULA REMOTA - PHP FULL STACK - SENAC-DF</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color:#eaeaea;
+    padding:20px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before {
+    content:"<?php echo 'PHP'; ?>  SELECT * FROM alunos;  $variavel = 'valor';  if($x>0){}  for($i=0;$i<10;$i++)  <?php echo 'MySQL'; ?>  CREATE TABLE notas(id INT);";
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    color:rgba(136,146,191,0.08);
+    font-family:'Courier New', monospace;
+    font-size:18px;
+    word-spacing:40px;
+    line-height:60px;
+    pointer-events:none;
+    z-index:0;
+    white-space:pre-wrap;
+  }
+  .container {
+    max-width:900px; margin:0 auto; position:relative; z-index:1;
+    background: rgba(20,25,50,0.85);
+    border:2px solid #8892BF;
+    border-radius:15px;
+    padding:30px;
+    box-shadow: 0 0 40px rgba(136,146,191,0.4);
+    backdrop-filter: blur(10px);
+  }
+  header {
+    text-align:center;
+    border-bottom:3px solid #8892BF;
+    padding-bottom:20px;
+    margin-bottom:25px;
+    background: linear-gradient(90deg, rgba(136,146,191,0.2), rgba(0,113,165,0.2));
+    border-radius:10px;
+    padding:20px;
+  }
+  h1 {
+    color:#FFD700;
+    font-size:1.4em;
+    text-shadow:2px 2px 4px #000;
+    letter-spacing:1px;
+  }
+  h2 {
+    color:#8892BF;
+    font-size:1.1em;
+    margin-top:10px;
+    font-style:italic;
+  }
+  .subtitle {
+    color:#00BFFF;
+    font-size:1em;
+    margin-top:8px;
+  }
+  .php-logo, .mysql-logo {
+    display:inline-block;
+    padding:4px 12px;
+    border-radius:5px;
+    font-weight:bold;
+    margin:0 5px;
+  }
+  .php-logo { background:#8892BF; color:#fff; }
+  .mysql-logo { background:#0075A5; color:#F29111; }
+  .card {
+    background: rgba(30,40,70,0.9);
+    border-left:5px solid #8892BF;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:20px;
+  }
+  .teoria {
+    background: rgba(0,113,165,0.15);
+    border:1px dashed #00BFFF;
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:20px;
+    line-height:1.6;
+  }
+  .teoria h3 { color:#FFD700; margin-bottom:10px; }
+  .teoria code {
+    background:#1a1a2e;
+    color:#FFD700;
+    padding:2px 6px;
+    border-radius:4px;
+    font-family:'Courier New', monospace;
+  }
+  .pergunta {
+    font-size:1.1em;
+    margin:15px 0;
+    color:#fff;
+    font-weight:bold;
+  }
+  .opcoes { display:flex; flex-direction:column; gap:10px; }
+  .opcao {
+    background: rgba(136,146,191,0.2);
+    border:2px solid #8892BF;
+    padding:12px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.3s;
+    color:#fff;
+  }
+  .opcao:hover { background: rgba(136,146,191,0.4); transform:translateX(5px); }
+  .opcao.correta { background:rgba(46,204,113,0.4); border-color:#2ecc71; }
+  .opcao.errada { background:rgba(231,76,60,0.4); border-color:#e74c3c; }
+  .feedback {
+    margin-top:15px;
+    padding:15px;
+    border-radius:8px;
+    font-weight:bold;
+    display:none;
+  }
+  .feedback.acerto { background:rgba(46,204,113,0.2); border:2px solid #2ecc71; color:#2ecc71; }
+  .feedback.erro { background:rgba(231,76,60,0.2); border:2px solid #e74c3c; color:#ff6b6b; }
+  .btn {
+    background: linear-gradient(135deg, #8892BF, #0075A5);
+    color:#fff;
+    border:none;
+    padding:12px 30px;
+    border-radius:8px;
+    font-size:1em;
+    cursor:pointer;
+    margin-top:15px;
+    font-weight:bold;
+    transition:all 0.3s;
+  }
+  .btn:hover { transform:scale(1.05); box-shadow:0 0 15px #8892BF; }
+  input[type=text] {
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:2px solid #8892BF;
+    background:rgba(20,25,50,0.9);
+    color:#fff;
+    font-size:1em;
+    margin:10px 0;
+  }
+  .info {
+    background: rgba(255,215,0,0.1);
+    border:1px solid #FFD700;
+    padding:10px;
+    border-radius:8px;
+    margin:10px 0;
+    font-size:0.9em;
+    color:#FFD700;
+  }
+  .progress {
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    height:20px;
+    overflow:hidden;
+    margin-bottom:15px;
+  }
+  .progress-bar {
+    background: linear-gradient(90deg, #8892BF, #FFD700);
+    height:100%;
+    transition:width 0.5s;
+    text-align:center;
+    color:#000;
+    font-weight:bold;
+    line-height:20px;
+  }
+  .resultado {
+    text-align:center;
+    padding:30px;
+  }
+  .nota {
+    font-size:4em;
+    color:#FFD700;
+    text-shadow:3px 3px 6px #000;
+    margin:20px 0;
+  }
+  .stats {
+    display:flex;
+    justify-content:space-around;
+    margin:20px 0;
+    flex-wrap:wrap;
+    gap:15px;
+  }
+  .stat-box {
+    background:rgba(136,146,191,0.2);
+    padding:20px;
+    border-radius:10px;
+    min-width:150px;
+    border:2px solid #8892BF;
+  }
+  .stat-box h3 { color:#00BFFF; font-size:0.9em; }
+  .stat-box p { font-size:2em; font-weight:bold; color:#FFD700; }
+  .hidden { display:none; }
+  footer {
+    text-align:center;
+    margin-top:20px;
+    color:#8892BF;
+    font-size:0.85em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🎓 AULA REMOTA - CURSO TÉCNICO EM DESENVOLVIMENTO DE SISTEMAS - SENAC-DF 🎓</h1>
+    <h2>TURMA 2026.07.67</h2>
+    <div class="subtitle">
+      Instrutor: <strong>Pedro Renato</strong> | Data: <strong>29/07/2026</strong>
+    </div>
+    <div style="margin-top:10px;">
+      <span class="php-logo">PHP</span>
+      <span class="mysql-logo">MySQL</span>
+      <span style="color:#FFD700; font-weight:bold;">FULL STACK</span>
+    </div>
+  </header>
 
+  <!-- TELA INICIAL -->
+  <div id="telaInicial" class="card">
+    <h3 style="color:#FFD700; margin-bottom:15px;">📝 QUESTIONÁRIO - PHP & BANCO DE DADOS</h3>
+    <p style="margin-bottom:15px; line-height:1.6;">
+      Bem-vindo(a) ao questionário da aula remota! Este formulário contém <strong>25 questões</strong> 
+      sobre XAMPP, Servidor Web, PHP, Variáveis, Condicionais, Laços de Repetição e integração PHP + HTML.
+    </p>
+    <p style="margin-bottom:15px;">
+      ⚠️ Antes de cada questão haverá um <strong>resumo teórico</strong>. Leia com atenção antes de responder!
+    </p>
+    <div class="info">
+      📅 Data registrada: <strong>29/07/2026</strong> | 🕐 Hora: registrada automaticamente no início
+    </div>
+    <label style="display:block; margin-top:15px; color:#00BFFF;">Digite seu nome completo:</label>
+    <input type="text" id="nomeAluno" placeholder="Ex: João da Silva">
+    <button class="btn" onclick="iniciar()">🚀 INICIAR QUESTIONÁRIO</button>
+  </div>
+
+  <!-- TELA DE QUESTÕES -->
+  <div id="telaQuestao" class="hidden">
+    <div class="info" id="infoAluno"></div>
+    <div class="progress"><div class="progress-bar" id="progressBar">0/25</div></div>
+    <div id="conteudoQuestao"></div>
+  </div>
+
+  <!-- TELA DE RESULTADO -->
+  <div id="telaResultado" class="hidden"></div>
+
+  <footer>
+    © 2026 - SENAC-DF | Desenvolvido para fins educacionais | PHP Full Stack
+  </footer>
+</div>
+
+<script>
+const questoes = [
+  {
+    teoria: `<h3>📘 O que é o XAMPP?</h3>
+      <p>O <strong>XAMPP</strong> é um pacote de software livre que contém o servidor web <strong>Apache</strong>, 
+      o banco de dados <strong>MySQL/MariaDB</strong>, e os interpretadores <strong>PHP</strong> e <strong>Perl</strong>. 
+      A letra "X" representa os sistemas operacionais (cross-platform: Windows, Linux, Mac). É amplamente usado 
+      para desenvolvimento local de aplicações web.</p>`,
+    pergunta: "Qual é a principal função do XAMPP?",
+    opcoes: [
+      "Editar imagens e vídeos",
+      "Criar um ambiente local de desenvolvimento web com Apache, MySQL e PHP",
+      "Fazer backup de arquivos do Windows",
+      "Compilar programas em C++"
+    ],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 O que é um Servidor Web?</h3>
+      <p>Um <strong>servidor web</strong> é um software (ou hardware dedicado) responsável por receber requisições 
+      de clientes (navegadores) e entregar páginas web como resposta. Exemplos famosos: <strong>Apache</strong>, 
+      <strong>Nginx</strong> e <strong>IIS</strong>. Ele utiliza o protocolo <strong>HTTP/HTTPS</strong> para comunicação.</p>`,
+    pergunta: "Qual das alternativas é um exemplo de servidor web?",
+    opcoes: ["Microsoft Word", "Apache", "Photoshop", "WinRAR"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 O que é um Servidor Local?</h3>
+      <p>Um <strong>servidor local</strong> é um servidor executado na própria máquina do desenvolvedor, 
+      sem necessidade de internet ou hospedagem externa. Ele permite testar sites e aplicações antes 
+      de publicá-los em um servidor real na nuvem. O XAMPP é uma ferramenta que cria esse servidor local.</p>`,
+    pergunta: "Qual a vantagem de usar um servidor local durante o desenvolvimento?",
+    opcoes: [
+      "Deixa o site mais lento",
+      "Permite testar a aplicação sem precisar de internet ou hospedagem paga",
+      "Impede o uso do PHP",
+      "Bloqueia o acesso ao banco de dados"
+    ],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 O que é o localhost?</h3>
+      <p><strong>localhost</strong> é o nome usado para se referir ao próprio computador através da rede. 
+      Ele corresponde ao endereço IP <code>127.0.0.1</code>. Quando você digita <code>http://localhost</code> 
+      no navegador, está acessando o servidor web instalado na sua própria máquina.</p>`,
+    pergunta: "Qual endereço IP corresponde ao localhost?",
+    opcoes: ["192.168.0.1", "127.0.0.1", "10.0.0.1", "255.255.255.0"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Como acessar arquivos no XAMPP?</h3>
+      <p>Os arquivos PHP do XAMPP devem ser salvos na pasta <code>htdocs</code> (dentro da instalação do XAMPP). 
+      Depois, basta iniciar o Apache e acessar pelo navegador usando <code>http://localhost/nome_do_arquivo.php</code>.</p>`,
+    pergunta: "Em qual pasta do XAMPP devemos salvar os arquivos PHP?",
+    opcoes: ["www", "htdocs", "public_html", "webroot"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 História do PHP - Parte 1</h3>
+      <p>O <strong>PHP</strong> (PHP: Hypertext Preprocessor) foi criado em <strong>1994</strong> por 
+      <strong>Rasmus Lerdorf</strong>. Inicialmente chamava-se "Personal Home Page Tools" e era um conjunto 
+      de scripts em C para rastrear visitas ao seu currículo online.</p>`,
+    pergunta: "Quem criou o PHP?",
+    opcoes: ["Tim Berners-Lee", "Rasmus Lerdorf", "James Gosling", "Brendan Eich"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 História do PHP - Parte 2</h3>
+      <p>O PHP evoluiu muito ao longo dos anos. Em <strong>1997</strong> surgiu o PHP 3, com suporte a bancos 
+      de dados. O PHP 4 (2000) introduziu o motor Zend. O PHP 5 (2004) trouxe a programação orientada a objetos. 
+      O PHP 7 (2015) trouxe grande melhoria de performance, e o PHP 8 (2020) adicionou JIT e tipagem mais forte.</p>`,
+    pergunta: "Em que ano o PHP foi criado?",
+    opcoes: ["1989", "1994", "2000", "2010"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 História do PHP - Parte 3</h3>
+      <p>O nome PHP é um <strong>acrônimo recursivo</strong>, que significa <strong>"PHP: Hypertext Preprocessor"</strong>. 
+      Isso significa que a sigla PHP aparece dentro da própria expansão do nome. Hoje é uma das linguagens mais 
+      usadas na web, alimentando sites como Facebook (inicialmente), WordPress e Wikipedia.</p>`,
+    pergunta: "O que significa a sigla PHP atualmente?",
+    opcoes: [
+      "Personal Home Page",
+      "PHP: Hypertext Preprocessor",
+      "Programação Hyper Web",
+      "Private Hosting Platform"
+    ],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Introdução ao PHP</h3>
+      <p>O PHP é uma linguagem de script <strong>interpretada</strong>, executada no <strong>lado do servidor</strong>. 
+      Todo código PHP deve estar entre as tags <code>&lt;?php</code> e <code>?&gt;</code>. 
+      Cada instrução deve terminar com <strong>ponto e vírgula (;)</strong>.</p>`,
+    pergunta: "Qual tag é usada para iniciar um bloco de código PHP?",
+    opcoes: ["&lt;php&gt;", "&lt;?php", "&lt;script php&gt;", "&lt;#php"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Saída de dados em PHP</h3>
+      <p>Para exibir informações na tela usamos os comandos <code>echo</code> ou <code>print</code>. 
+      Exemplo: <code>echo "Olá mundo!";</code> — isso imprime o texto na página HTML gerada.</p>`,
+    pergunta: "Qual comando exibe texto na tela em PHP?",
+    opcoes: ["write", "echo", "display", "show"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Comentários em PHP</h3>
+      <p>Comentários são trechos ignorados pelo interpretador, úteis para documentar o código. 
+      Em PHP usamos <code>//</code> para uma linha ou <code>/* ... */</code> para múltiplas linhas.</p>`,
+    pergunta: "Qual é a sintaxe correta para um comentário de uma linha em PHP?",
+    opcoes: ["&lt;!-- comentário --&gt;", "# comentário ou // comentário", "' comentário", "** comentário **"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 O que é uma Variável?</h3>
+      <p>Uma <strong>variável</strong> é um espaço na memória do computador que armazena um valor que pode 
+      mudar durante a execução do programa. Em PHP, toda variável começa com o símbolo <strong>$</strong> (cifrão). 
+      Exemplo: <code>$nome = "Maria";</code></p>`,
+    pergunta: "Qual símbolo identifica uma variável em PHP?",
+    opcoes: ["@", "#", "$", "&"],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Regras para nomes de variáveis</h3>
+      <p>Em PHP, variáveis: devem começar com <code>$</code> seguido de letra ou underscore (_); 
+      não podem começar com número; são <strong>case-sensitive</strong> (<code>$Nome</code> é diferente de <code>$nome</code>); 
+      não podem conter espaços.</p>`,
+    pergunta: "Qual dos seguintes nomes de variável é VÁLIDO em PHP?",
+    opcoes: ["$1idade", "$minha idade", "$_valor_total", "$nome-completo"],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Tipos de dados em PHP</h3>
+      <p>PHP é uma linguagem de <strong>tipagem dinâmica</strong>, ou seja, não precisamos declarar o tipo da variável. 
+      Os principais tipos são: <strong>string</strong> (texto), <strong>int</strong> (inteiro), <strong>float</strong> (decimal), 
+      <strong>bool</strong> (true/false), <strong>array</strong> e <strong>object</strong>.</p>`,
+    pergunta: "Qual tipo de dado a variável <code>$preco = 19.90;</code> armazena?",
+    opcoes: ["string", "int", "float", "bool"],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Concatenação de strings</h3>
+      <p>Em PHP, usamos o operador <strong>ponto (.)</strong> para juntar (concatenar) textos e variáveis. 
+      Exemplo: <code>echo "Olá, " . $nome;</code></p>`,
+    pergunta: "Qual operador é usado para concatenar strings em PHP?",
+    opcoes: ["+", "&", ".", ","],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Operadores de comparação</h3>
+      <p>Para comparar valores usamos: <code>==</code> (igual), <code>!=</code> (diferente), 
+      <code>&gt;</code> (maior), <code>&lt;</code> (menor), <code>&gt;=</code> (maior ou igual), 
+      <code>&lt;=</code> (menor ou igual), <code>===</code> (idêntico - valor e tipo).</p>`,
+    pergunta: "Qual operador verifica se dois valores são IGUAIS em PHP?",
+    opcoes: ["=", "==", "===", "=&gt;"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Estrutura Condicional IF</h3>
+      <p>O comando <code>if</code> executa um bloco de código SOMENTE se a condição for verdadeira. 
+      Sintaxe: <code>if (condição) { ... }</code>. Podemos usar <code>else</code> para o caso falso 
+      e <code>elseif</code> para múltiplas condições.</p>`,
+    pergunta: "Qual a estrutura correta de um IF em PHP?",
+    opcoes: [
+      "if x &gt; 5 then { }",
+      "if (x &gt; 5) { }",
+      "when (x &gt; 5) do { }",
+      "check x &gt; 5 { }"
+    ],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 IF / ELSE / ELSEIF</h3>
+      <p>Exemplo completo:<br>
+      <code>if ($nota &gt;= 7) { echo "Aprovado"; }<br>
+      elseif ($nota &gt;= 5) { echo "Recuperação"; }<br>
+      else { echo "Reprovado"; }</code></p>`,
+    pergunta: "Se $nota = 6, qual mensagem será exibida no código acima?",
+    opcoes: ["Aprovado", "Recuperação", "Reprovado", "Nenhuma"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Operadores lógicos</h3>
+      <p>Para combinar condições usamos: <code>&amp;&amp;</code> (E), <code>||</code> (OU), <code>!</code> (NÃO). 
+      Exemplo: <code>if ($idade &gt;= 18 &amp;&amp; $tem_cnh == true)</code> — ambas condições devem ser verdadeiras.</p>`,
+    pergunta: "Qual operador representa o 'E' lógico em PHP?",
+    opcoes: ["||", "&amp;&amp;", "!", "??"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Estrutura SWITCH</h3>
+      <p>O <code>switch</code> é usado para comparar uma variável com vários valores possíveis. 
+      Sintaxe: <code>switch($x) { case 1: ...; break; case 2: ...; break; default: ...; }</code></p>`,
+    pergunta: "Qual palavra-chave encerra cada caso no switch para evitar 'fall-through'?",
+    opcoes: ["stop", "end", "break", "exit"],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Laço de Repetição FOR</h3>
+      <p>O <code>for</code> repete um bloco um número definido de vezes. 
+      Sintaxe: <code>for (inicialização; condição; incremento) { ... }</code>. 
+      Exemplo: <code>for ($i=1; $i&lt;=5; $i++) { echo $i; }</code> — imprime 12345.</p>`,
+    pergunta: "Quantas vezes o laço <code>for ($i=0; $i&lt;3; $i++)</code> será executado?",
+    opcoes: ["2 vezes", "3 vezes", "4 vezes", "Infinitas"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Laço WHILE</h3>
+      <p>O <code>while</code> repete enquanto a condição for verdadeira. 
+      Sintaxe: <code>while (condição) { ... }</code>. 
+      Cuidado: se a condição nunca ficar falsa, o loop será infinito!</p>`,
+    pergunta: "O que acontece se a condição do while NUNCA se tornar falsa?",
+    opcoes: [
+      "O programa para automaticamente",
+      "O loop executa uma única vez",
+      "O loop se torna infinito e trava o programa",
+      "O PHP ignora o comando"
+    ],
+    correta: 2
+  },
+  {
+    teoria: `<h3>📘 Laço FOREACH</h3>
+      <p>O <code>foreach</code> é usado especificamente para percorrer <strong>arrays</strong>. 
+      Sintaxe: <code>foreach ($array as $item) { ... }</code> ou 
+      <code>foreach ($array as $chave =&gt; $valor) { ... }</code>.</p>`,
+    pergunta: "Para qual tipo de estrutura o foreach é mais indicado?",
+    opcoes: ["Números inteiros", "Arrays", "Strings apenas", "Banco de dados"],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 PHP + HTML Integrados</h3>
+      <p>PHP pode gerar HTML dinamicamente. Basta misturar as tags: 
+      <code>&lt;h1&gt;&lt;?php echo "Olá, " . $nome; ?&gt;&lt;/h1&gt;</code>. 
+      O PHP é processado no servidor e o HTML resultante é enviado ao navegador.</p>`,
+    pergunta: "Onde o código PHP é processado?",
+    opcoes: [
+      "No navegador do usuário (client-side)",
+      "No servidor (server-side), antes de enviar ao navegador",
+      "No banco de dados MySQL",
+      "No XAMPP apenas quando clicamos em 'Executar'"
+    ],
+    correta: 1
+  },
+  {
+    teoria: `<h3>📘 Formulários HTML com PHP</h3>
+      <p>Podemos receber dados de formulários HTML usando as superglobais <code>$_GET</code> e <code>$_POST</code>. 
+      Exemplo: <code>$nome = $_POST['nome'];</code> captura o valor de um campo chamado "nome" enviado via POST.</p>`,
+    pergunta: "Qual superglobal captura dados enviados por um formulário com method='POST'?",
+    opcoes: ["$_FORM", "$_POST", "$_GET", "$_REQUEST"],
+    correta: 1
+  }
+];
+
+let indiceAtual = 0;
+let acertos = 0;
+let erros = 0;
+let nomeAluno = "";
+let horaInicio = "";
+
+function iniciar() {
+  nomeAluno = document.getElementById('nomeAluno').value.trim();
+  if (!nomeAluno) {
+    alert("⚠️ Por favor, digite seu nome antes de iniciar!");
+    return;
+  }
+  const agora = new Date();
+  horaInicio = agora.toLocaleTimeString('pt-BR');
+  document.getElementById('telaInicial').classList.add('hidden');
+  document.getElementById('telaQuestao').classList.remove('hidden');
+  document.getElementById('infoAluno').innerHTML = 
+    `👤 Aluno: <strong>${nomeAluno}</strong> | 📅 29/07/2026 | 🕐 Início: <strong>${horaInicio}</strong>`;
+  mostrarQuestao();
+}
+
+function mostrarQuestao() {
+  const q = questoes[indiceAtual];
+  const pct = ((indiceAtual)/25)*100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressBar').textContent = `${indiceAtual}/25`;
+  
+  let html = `
+    <div class="teoria">${q.teoria}</div>
+    <div class="card">
+      <div class="pergunta">Questão ${indiceAtual+1}/25: ${q.pergunta}</div>
+      <div class="opcoes" id="opcoes">
+  `;
+  q.opcoes.forEach((op, i) => {
+    html += `<div class="opcao" onclick="responder(${i})">${String.fromCharCode(65+i)}) ${op}</div>`;
+  });
+  html += `</div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn hidden" id="btnProx" onclick="proxima()">Próxima Questão ➡️</button>
+  </div>`;
+  document.getElementById('conteudoQuestao').innerHTML = html;
+}
+
+function responder(escolha) {
+  const q = questoes[indiceAtual];
+  const opcoes = document.querySelectorAll('.opcao');
+  const feedback = document.getElementById('feedback');
+  const btnProx = document.getElementById('btnProx');
+  
+  opcoes.forEach(op => op.style.pointerEvents = 'none');
+  opcoes[q.correta].classList.add('correta');
+  
+  if (escolha === q.correta) {
+    acertos++;
+    feedback.className = 'feedback acerto';
+    feedback.innerHTML = `✅ <strong>CORRETO!</strong> Excelente resposta!`;
+    feedback.style.display = 'block';
+  } else {
+    erros++;
+    opcoes[escolha].classList.add('errada');
+    feedback.className = 'feedback erro';
+    feedback.innerHTML = `❌ <strong>Resposta incorreta!</strong> A alternativa correta era: <br><strong>${String.fromCharCode(65+q.correta)}) ${q.opcoes[q.correta]}</strong><br><em>Analise a resposta certa e siga para a próxima questão.</em>`;
+    feedback.style.display = 'block';
+  }
+  
+  btnProx.classList.remove('hidden');
+  if (indiceAtual === 24) btnProx.textContent = "🏁 Ver Resultado Final";
+}
+
+function proxima() {
+  indiceAtual++;
+  if (indiceAtual >= 25) {
+    mostrarResultado();
+  } else {
+    mostrarQuestao();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('telaQuestao').classList.add('hidden');
+  const tela = document.getElementById('telaResultado');
+  tela.classList.remove('hidden');
+  const nota = ((acertos/25)*10).toFixed(1);
+  const horaFim = new Date().toLocaleTimeString('pt-BR');
+  let mensagem = "";
+  if (nota >= 9) mensagem = "🏆 EXCELENTE! Você dominou o conteúdo!";
+  else if (nota >= 7) mensagem = "👏 MUITO BOM! Ótimo desempenho!";
+  else if (nota >= 5) mensagem = "📚 BOM! Continue estudando para melhorar.";
+  else mensagem = "💪 Não desanime! Revise o conteúdo e tente novamente.";
+  
+  tela.innerHTML = `
+    <div class="card resultado">
+      <h2 style="color:#FFD700;">🎓 RESULTADO FINAL</h2>
+      <div class="info">
+        👤 Aluno: <strong>${nomeAluno}</strong><br>
+        📅 Data: <strong>29/07/2026</strong> | 🕐 Início: <strong>${horaInicio}</strong> | 🕐 Término: <strong>${horaFim}</strong>
+      </div>
+      <div class="nota">${nota}</div>
+      <p style="font-size:1.2em; color:#00BFFF;">${mensagem}</p>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>✅ ACERTOS</h3>
+          <p>${acertos}</p>
+        </div>
+        <div class="stat-box">
+          <h3>❌ ERROS</h3>
+          <p>${erros}</p>
+        </div>
+        <div class="stat-box">
+          <h3>📝 TOTAL</h3>
+          <p>25</p>
+        </div>
+        <div class="stat-box">
+          <h3>📊 NOTA</h3>
+          <p>${nota}</p>
+        </div>
+      </div>
+     
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
